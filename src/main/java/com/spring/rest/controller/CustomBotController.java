@@ -25,6 +25,10 @@ public class CustomBotController {
 
     @Value("${openai.api.url}")
     private String apiURL;
+    
+    @Value("${openai.api.key}")
+    private String apiKey;
+    
 
     @GetMapping("/chat")
     public ResponseEntity<String> chat(@RequestParam String prompt) {
@@ -35,6 +39,9 @@ public class CustomBotController {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.add("HTTP-Referer", "http://localhost:8080");
             headers.add("X-Title", "SpringBootBot");
+            headers.setBearerAuth(apiKey);
+            
+            
 
             HttpEntity<ChatGPTRequest> entity = new HttpEntity<>(request, headers);
             ResponseEntity<ChatGPTResponse> response = restTemplate.postForEntity(apiURL, entity, ChatGPTResponse.class);
