@@ -6,11 +6,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.annotation.PostConstruct;
+
 @Configuration
 public class OpenAiConfig {
 
     @Value("${openai.api.key}")
     private String openaiApiKey;
+
+    @PostConstruct
+    public void logKeyStatus() {
+        if (openaiApiKey == null || openaiApiKey.equals("default-fallback")) {
+            System.out.println("❌ OpenRouter API key NOT injected or using default!");
+        } else {
+            System.out.println("✅ OpenRouter API key loaded successfully.");
+        }
+    }
 
     @Bean
     public RestTemplate restTemplate() {
