@@ -5,6 +5,7 @@ import com.spring.rest.dto.ChatGPTResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,10 @@ import org.springframework.web.client.RestTemplate;
 @CrossOrigin(origins = "*") 
 @RestController
 @RequestMapping("/bot")
-@RequiredArgsConstructor
 public class CustomBotController {
-
-    private final RestTemplate restTemplate;
+	
+	@Autowired
+    private  RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(CustomBotController.class);
 
     @Value("${openai.model}")
@@ -25,7 +26,7 @@ public class CustomBotController {
     @Value("${openai.api.url}")
     private String apiURL;
 
-    @PostMapping("/chat")
+    @GetMapping("/chat")
     public ResponseEntity<String> chat(@RequestParam String prompt) {
         try {
             ChatGPTRequest request = new ChatGPTRequest(model, prompt);
@@ -52,8 +53,8 @@ public class CustomBotController {
             		             .body("Error: " + e.getMessage());
         }
     }
-    @GetMapping("/chat")
-    public ResponseEntity<String> chatGet(@RequestParam String prompt) {
-        return chat(prompt); // call your existing POST method
-    }
+//    @GetMapping("/chat")
+//    public ResponseEntity<String> chatGet(@RequestParam String prompt) {
+//        return chat(prompt); // call your existing POST method
+//    }
 }
