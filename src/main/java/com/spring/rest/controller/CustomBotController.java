@@ -1,23 +1,32 @@
 package com.spring.rest.controller;
 
-import com.spring.rest.dto.ChatGPTRequest;
-import com.spring.rest.dto.ChatGPTResponse;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-@CrossOrigin(origins = "*") 
+import com.spring.rest.dto.ChatGPTRequest;
+import com.spring.rest.dto.ChatGPTResponse;
+
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/bot")
 public class CustomBotController {
-	
-	@Autowired
-    private  RestTemplate restTemplate;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     private static final Logger logger = LoggerFactory.getLogger(CustomBotController.class);
 
     @Value("${openai.model}")
@@ -25,11 +34,8 @@ public class CustomBotController {
 
     @Value("${openai.api.url}")
     private String apiURL;
-    
-    @Value("${openai.api.key}")
-    private String apiKey;
-    
 
+ 
     @GetMapping("/chat")
     public ResponseEntity<String> chat(@RequestParam String prompt) {
         try {
@@ -37,31 +43,22 @@ public class CustomBotController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("HTTP-Referer", "http://localhost:8080");
+            headers.add("HTTP-Referer", "https://yourapp.up.railway.app"); // ✅ Must be real domain
             headers.add("X-Title", "SpringBootBot");
-            headers.setBearerAuth(apiKey);
-            
-            
 
             HttpEntity<ChatGPTRequest> entity = new HttpEntity<>(request, headers);
             ResponseEntity<ChatGPTResponse> response = restTemplate.postForEntity(apiURL, entity, ChatGPTResponse.class);
 
-            if (response.getBody() != null && !response.getBody().getChoices().isEmpty() &&response.getBody().getChoices().get(0).getMessage() != null) {
+            if (response.getBody() != null && !response.getBody().getChoices().isEmpty()
+                    && response.getBody().getChoices().get(0).getMessage() != null) {
                 String answer = response.getBody().getChoices().get(0).getMessage().getContent();
                 return ResponseEntity.ok(answer);
-            } 
-            else {
+            } else {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No response from OpenAI.");
             }
-        } 
-        catch (Exception e) {
-            logger.error("Exception: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            		             .body("Error: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error occurred:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-//    @GetMapping("/chat")
-//    public ResponseEntity<String> chatGet(@RequestParam String prompt) {
-//        return chat(prompt); // call your existing POST method
-//    }
 }
