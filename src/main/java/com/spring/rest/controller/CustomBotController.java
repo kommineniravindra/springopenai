@@ -40,9 +40,10 @@ public class CustomBotController {
         try {
             ChatGPTRequest request = new ChatGPTRequest(model, prompt);
 
-            HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = new HttpHeaders(); // ✅ Declare headers first
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("HTTP-Referer", "https://yourapp.up.railway.app"); // ✅ Must be real domain
+            headers.add("User-Agent", "SpringApp/1.0");
+            headers.add("HTTP-Referer", "https://springbackend-production-7.up.railway.app");
             headers.add("X-Title", "SpringBootBot");
 
             HttpEntity<ChatGPTRequest> entity = new HttpEntity<>(request, headers);
@@ -60,4 +61,5 @@ public class CustomBotController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+
 }
