@@ -1,19 +1,24 @@
-# 👉 Sensitive config
-local.properties
+# Java
+*.class
 
-# 👉 Maven build output
+# Maven
 /target/
+!.mvn/wrapper/maven-wrapper.jar
 
-# 👉 Logs
-*.log
-
-# 👉 IDE-specific files
+# IDEs
 *.iml
 .idea/
-.classpath
+.vscode/
 .project
+.classpath
 .settings/
 
-# 👉 OS-specific
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Custom
+local.properties
