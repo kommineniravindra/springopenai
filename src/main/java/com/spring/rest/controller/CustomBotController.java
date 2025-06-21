@@ -62,9 +62,9 @@ public class CustomBotController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-    @GetMapping("/bot/chat")
-    public ResponseEntity<String> chatGet(@RequestParam String prompt) {
-        return chat(prompt);
-    }
+//    @GetMapping("/bot/chat")
+//    public ResponseEntity<String> chatGet(@RequestParam String prompt) {
+//        return chat(prompt);
+//    }
 
 }
